@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Share the Moment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#3a1530;
+    --ivory:#fff0f6;
+    --sage:#ff4f9a;
+    --gold:#ffb800;
+    --blush:#ff8fc7;
+    --line: rgba(255,79,154,0.25);
+    --pink-deep:#e0177d;
+    --pink-pale:#ffd7ea;
+    --mint:#00d9b5;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 12% 18%, var(--pink-pale) 0%, transparent 40%),
+      radial-gradient(circle at 88% 82%, #d6f8ff 0%, transparent 40%),
+      var(--ivory);
+    color:var(--ink);
+    font-family:'Poppins', sans-serif;
+    font-weight:300;
+    min-height:100vh;
+  }
+  h1,h2,h3,.serif{font-family:'Fredoka', sans-serif; font-weight:600;}
+
+  /* ---------- GUEST VIEW ---------- */
+  .guest-wrap{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    padding:0 24px 48px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .g-header{
+    text-align:center;
+    padding:40px 0 24px;
+  }
+  .g-eyebrow{
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    font-size:12px;
+    font-weight:600;
+    color:var(--pink-deep);
+    margin-bottom:10px;
+  }
+  .g-title{
+    font-size:44px;
+    font-weight:600;
+    margin:0 0 6px;
+    line-height:1.05;
+    color:var(--pink-deep);
+    text-shadow: 3px 3px 0 var(--gold);
+  }
+  .g-sub{
+    font-size:15px;
+    color:#6b3358;
+    max-width:320px;
+    margin:0 auto;
+    font-weight:400;
+  }
+  .g-divider{
+    width:50px;
+    height:5px;
+    border-radius:10px;
+    background:linear-gradient(90deg, var(--sage), var(--gold));
+    margin:18px auto;
+  }
+
+  .capture-zone{
+    width:100%;
+    aspect-ratio:4/5;
+    border:3px dashed var(--sage);
+    border-radius:28px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    margin-bottom:20px;
+    box-shadow: 0 10px 0 rgba(255,79,154,0.12);
+  }
+  .capture-zone img{
+    width:100%;height:100%;object-fit:cover;
+  }
+  .capture-empty{
+    text-align:center;
+    color:var(--pink-deep);
+    padding:24px;
+  }
+  .capture-empty svg{width:36px;height:36px;margin-bottom:10px;opacity:0.6;}
+  .capture-empty p{font-size:13px;letter-spacing:0.03em;margin:0;}
+
+  input[type=file]{display:none;}
+
+  .btn-row{
+    display:flex;
+    gap:10px;
+    width:100%;
+    margin-bottom:22px;
+  }
+  .btn{
+    flex:1;
+    padding:14px 10px;
+    border:2px solid var(--pink-deep);
+    background:#fff;
+    color:var(--pink-deep);
+    font-family:'Fredoka',sans-serif;
+    font-weight:500;
+    font-size:14px;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    border-radius:16px;
+    transition:transform .15s ease, background .15s ease, color .15s ease;
+  }
+  .btn:hover{background:var(--pink-deep); color:#fff; transform:translateY(-2px);}
+  .btn:active{transform:translateY(0);}
+  .btn-primary{
+    width:100%;
+    background:linear-gradient(90deg, var(--sage), var(--pink-deep));
+    border:none;
+    color:#fff;
+    padding:17px;
+    font-size:15px;
+    letter-spacing:0.03em;
+    margin-top:4px;
+    box-shadow:0 6px 0 #b30f5c;
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 8px 0 #b30f5c;}
+  .btn-primary:active{transform:translateY(2px); box-shadow:0 3px 0 #b30f5c;}
+  .btn-primary:disabled{opacity:0.4; cursor:not-allowed; box-shadow:none; transform:none;}
+
+  .field{
+    width:100%;
+    margin-bottom:14px;
+  }
+  .field label{
+    display:block;
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--pink-deep);
+    margin-bottom:6px;
+  }
+  .field input, .field textarea{
+    width:100%;
+    border:none;
+    border-bottom:2px solid var(--line);
+    background:transparent;
+    font-family:'Poppins',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    padding:8px 2px;
+    outline:none;
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--gold);}
+  .field textarea{resize:none; height:48px;}
+
+  .status{
+    text-align:center;
+    font-size:13px;
+    color:var(--pink-deep);
+    min-height:18px;
+    margin-top:10px;
+    font-weight:500;
+  }
+  .status.err{color:#e0177d;}
+
+  .success-screen{
+    text-align:center;
+    padding:60px 20px;
+  }
+  .success-screen .mark{
+    font-size:52px;
+    color:var(--mint);
+    margin-bottom:18px;
+  }
+  .success-screen h2{font-size:34px; margin:0 0 8px; color:var(--pink-deep);}
+  .success-screen p{color:#6b3358; font-size:14px;}
+
+  /* ---------- DISPLAY VIEW ---------- */
+  .stage{
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,184,0,0.35) 0%, transparent 35%),
+      radial-gradient(circle at 85% 85%, rgba(0,217,181,0.25) 0%, transparent 40%),
+      linear-gradient(160deg, #e0177d 0%, #ff4f9a 55%, #ff8fc7 100%);
+    min-height:100vh;
+    width:100%;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+    overflow:hidden;
+  }
+  .stage-header{
+    position:absolute;
+    top:36px;
+    left:0; right:0;
+    text-align:center;
+  }
+  .stage-header .eyebrow{
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    font-size:14px;
+    font-weight:600;
+    color:#fff566;
+  }
+  .stage-header h1{
+    font-size:44px;
+    font-weight:700;
+    margin:8px 0 0;
+    color:#fff;
+    text-shadow: 4px 4px 0 rgba(224,23,125,0.5);
+  }
+  .stage-main{
+    position:relative;
+    width:100%;
+    height:78vh;
+    max-width:1400px;
+  }
+  .stack-item{
+    position:absolute;
+    top:50%;
+    left:50%;
+    border:5px solid #fff;
+    border-radius:24px;
+    padding:8px;
+    background:rgba(255,255,255,0.15);
+    box-shadow:0 20px 40px rgba(88,0,45,0.35);
+    transition: transform 0.9s cubic-bezier(.2,.8,.2,1), opacity 0.9s ease;
+    width:34vw;
+    max-width:480px;
+  }
+  .stack-item img{
+    width:100%;
+    display:block;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    border-radius:16px;
+  }
+  .stack-item .cap{
+    text-align:center;
+    margin-top:14px;
+    opacity:0;
+    transition:opacity 0.5s ease 0.4s;
+  }
+  .stack-item .cap .name{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:24px;
+    color:#fff566;
+  }
+  .stack-item .cap .msg{
+    font-size:14px;
+    color:#ffe3f1;
+    margin-top:4px;
+  }
+  /* pos-0 = center/front (newest), higher numbers = further back, smaller, fainter */
+  .pos-0{ transform:translate(-50%,-50%) scale(1); opacity:1; z-index:50; }
+  .pos-0 .cap{ opacity:1; }
+  .pos-1{ transform:translate(-50%,-50%) translateX(-38vw) translateY(-4vh) scale(0.62) rotate(-6deg); opacity:0.85; z-index:40; }
+  .pos-2{ transform:translate(-50%,-50%) translateX(38vw) translateY(-4vh) scale(0.62) rotate(6deg); opacity:0.85; z-index:40; }
+  .pos-3{ transform:translate(-50%,-50%) translateX(-58vw) translateY(12vh) scale(0.42) rotate(-10deg); opacity:0.6; z-index:30; }
+  .pos-4{ transform:translate(-50%,-50%) translateX(58vw) translateY(12vh) scale(0.42) rotate(10deg); opacity:0.6; z-index:30; }
+  .pos-5{ transform:translate(-50%,-50%) translateX(-72vw) translateY(26vh) scale(0.28) rotate(-14deg); opacity:0.35; z-index:20; }
+  .pos-6{ transform:translate(-50%,-50%) translateX(72vw) translateY(26vh) scale(0.28) rotate(14deg); opacity:0.35; z-index:20; }
+  .pos-exit{ transform:translate(-50%,-50%) scale(0.12); opacity:0; z-index:10; }
+
+  .stage-empty{
+    text-align:center;
+    color:#ffe3f1;
+  }
+  .stage-empty .serif{font-size:36px; color:#fff; font-weight:600;}
+  .stage-count{
+    position:absolute;
+    bottom:28px;
+    right:36px;
+    font-size:14px;
+    font-weight:600;
+    color:#fff566;
+    letter-spacing:0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const view = params.get('view') === 'display' ? 'display' : 'guest';
+  const app = document.getElementById('app');
+
+  const EVENT_TITLE = params.get('title') || "Our Wedding";
+
+  // ---------- shared helpers ----------
+  async function safeGet(key, shared){
+    try{ return await window.storage.get(key, shared); }
+    catch(e){ return null; }
+  }
+
+  function compressImage(file, maxDim, quality){
+    return new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onload = (e)=>{
+        const img = new Image();
+        img.onload = ()=>{
+          let w = img.width, h = img.height;
+          if (w > h && w > maxDim){ h = h * (maxDim/w); w = maxDim; }
+          else if (h >= w && h > maxDim){ w = w * (maxDim/h); h = maxDim; }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ============================================================
+  // GUEST VIEW
+  // ============================================================
+  if (view === 'guest'){
+    let selectedDataUrl = null;
+
+    app.innerHTML = `
+      <div class="guest-wrap">
+        <div class="g-header">
+          <div class="g-eyebrow">Scan &middot; Snap &middot; Share</div>
+          <h1 class="g-title">${EVENT_TITLE}</h1>
+          <div class="g-divider"></div>
+          <p class="g-sub">Take a photo or upload one from your camera roll — it'll appear on the big screen in a moment.</p>
+        </div>
+
+        <div id="formArea" style="width:100%;">
+          <div class="capture-zone" id="captureZone">
+            <div class="capture-empty" id="captureEmpty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
+              <p>No photo selected yet</p>
+            </div>
+            <img id="previewImg" style="display:none;">
+          </div>
+
+          <div class="btn-row">
+            <button class="btn" id="btnCamera">Take Photo</button>
+            <button class="btn" id="btnUpload">Choose Photo</button>
+          </div>
+          <input type="file" id="fileCamera" accept="image/*" capture="environment">
+          <input type="file" id="fileUpload" accept="image/*">
+
+          <div class="field">
+            <label>Your Name (optional)</label>
+            <input type="text" id="guestName" maxlength="40" placeholder="e.g. Aunt Carol">
+          </div>
+          <div class="field">
+            <label>Caption (optional)</label>
+            <textarea id="guestCaption" maxlength="120" placeholder="A little message..."></textarea>
+          </div>
+
+          <button class="btn-primary" id="btnSend" disabled>Send to the Big Screen</button>
+          <div class="status" id="statusMsg"></div>
+        </div>
+      </div>
+    `;
+
+    const captureZone = document.getElementById('captureZone');
+    const captureEmpty = document.getElementById('captureEmpty');
+    const previewImg = document.getElementById('previewImg');
+    const fileCamera = document.getElementById('fileCamera');
+    const fileUpload = document.getElementById('fileUpload');
+    const btnSend = document.getElementById('btnSend');
+    const statusMsg = document.getElementById('statusMsg');
+
+    document.getElementById('btnCamera').onclick = ()=> fileCamera.click();
+    document.getElementById('btnUpload').onclick = ()=> fileUpload.click();
+
+    async function handleFile(file){
+      if (!file) return;
+      statusMsg.textContent = 'Processing photo...';
+      statusMsg.className = 'status';
+      try{
+        selectedDataUrl = await compressImage(file, 1000, 0.72);
+        previewImg.src = selectedDataUrl;
+        previewImg.style.display = 'block';
+        captureEmpty.style.display = 'none';
+        btnSend.disabled = false;
+        statusMsg.textContent = '';
+      }catch(e){
+        statusMsg.textContent = "Couldn't read that photo — try another.";
+        statusMsg.className = 'status err';
+      }
+    }
+    fileCamera.onchange = (e)=> handleFile(e.target.files[0]);
+    fileUpload.onchange = (e)=> handleFile(e.target.files[0]);
+
+    btnSend.onclick = async ()=>{
+      if (!selectedDataUrl) return;
+      btnSend.disabled = true;
+      statusMsg.textContent = 'Sending...';
+      statusMsg.className = 'status';
+
+      const name = document.getElementById('guestName').value.trim().slice(0,40);
+      const caption = document.getElementById('guestCaption').value.trim().slice(0,120);
+      const key = 'photo:' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+
+      const payload = JSON.stringify({ img: selectedDataUrl, name, caption, ts: Date.now() });
+
+      try{
+        const result = await window.storage.set(key, payload, true);
+        if (!result){
+          statusMsg.textContent = "Hmm, that didn't send. Please try again.";
+          statusMsg.className = 'status err';
+          btnSend.disabled = false;
+          return;
+        }
+        document.getElementById('formArea').innerHTML = `
+          <div class="success-screen">
+            <div class="mark">&#10003;</div>
+            <h2 class="serif">Sent!</h2>
+            <p>Your photo is on its way to the big screen.</p>
+            <button class="btn" style="margin-top:24px; width:100%;" onclick="location.reload()">Share Another Photo</button>
+          </div>
+        `;
+      }catch(e){
+        statusMsg.textContent = "Connection hiccup — please try again.";
+        statusMsg.className = 'status err';
+        btnSend.disabled = false;
+      }
+    };
+  }
+
+  // ============================================================
+  // DISPLAY VIEW
+  // ============================================================
+  if (view === 'display'){
+    app.innerHTML = `
+      <div class="stage">
+        <div class="stage-header">
+          <div class="eyebrow">Live from your phones</div>
+          <h1>${EVENT_TITLE}</h1>
+        </div>
+        <div class="stage-main" id="stageMain">
+          <div class="stage-empty">
+            <div class="serif">Waiting for the first photo&hellip;</div>
+          </div>
+        </div>
+        <div class="stage-count" id="stageCount"></div>
+      </div>
+    `;
+
+    const stageMain = document.getElementById('stageMain');
+    const stageCount = document.getElementById('stageCount');
+    const loaded = new Map(); // key -> {img,name,caption,ts}
+    const domItems = new Map(); // key -> element
+    const MAX_VISIBLE_POS = 6; // pos-1..pos-6 behind the center pos-0
+    let emptyShown = true;
+
+    function escapeHtml(s){
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function ensureStageReady(){
+      if (emptyShown){
+        stageMain.innerHTML = '';
+        emptyShown = false;
+      }
+    }
+
+    function render(){
+      const items = Array.from(loaded.entries())
+        .sort((a,b)=> a[1].ts - b[1].ts); // oldest -> newest
+
+      if (items.length === 0){
+        stageMain.innerHTML = `<div class="stage-empty"><div class="serif">Waiting for the first photo&hellip;</div></div>`;
+        stageCount.textContent = '';
+        emptyShown = true;
+        return;
+      }
+
+      ensureStageReady();
+
+      // newest first, so index 0 = pos-0 (center), index 1 = pos-1, etc.
+      const ordered = items.slice().reverse();
+
+      // Create any missing DOM nodes (new photos) off-stage-right, faded, ready to animate in
+      ordered.forEach((entry)=>{
+        const [key, data] = entry;
+        if (!domItems.has(key)){
+          const el = document.createElement('div');
+          el.className = 'stack-item pos-exit';
+          el.innerHTML = `
+            <img src="${data.img}">
+            ${(data.name || data.caption) ? `
+              <div class="cap">
+                ${data.name ? `<div class="name">${escapeHtml(data.name)}</div>` : ''}
+                ${data.caption ? `<div class="msg">${escapeHtml(data.caption)}</div>` : ''}
+              </div>` : ''}
+          `;
+          stageMain.appendChild(el);
+          domItems.set(key, el);
+        }
+      });
+
+      // Assign positions: force reflow before applying new transform so transition animates
+      requestAnimationFrame(()=>{
+        ordered.forEach((entry, idx)=>{
+          const [key] = entry;
+          const el = domItems.get(key);
+          if (!el) return;
+          el.className = idx <= MAX_VISIBLE_POS ? `stack-item pos-${idx}` : 'stack-item pos-exit';
+        });
+      });
+
+      // Remove DOM nodes for photos that fell off the back or no longer exist
+      const currentKeys = new Set(ordered.map(e => e[0]));
+      for (const [key, el] of domItems.entries()){
+        if (!currentKeys.has(key)){
+          el.remove();
+          domItems.delete(key);
+        }
+      }
+
+      stageCount.textContent = items.length + (items.length === 1 ? ' photo shared' : ' photos shared');
+    }
+
+    async function poll(){
+      try{
+        const list = await window.storage.list('photo:', true);
+        const keys = (list && list.keys) ? list.keys : [];
+        const newKeys = keys.filter(k => !loaded.has(k));
+        for (const k of newKeys){
+          try{
+            const res = await window.storage.get(k, true);
+            if (res && res.value){
+              const data = JSON.parse(res.value);
+              loaded.set(k, data);
+            }
+          }catch(e){ /* skip broken entry */ }
+        }
+        if (newKeys.length){ render(); }
+      }catch(e){
+        // storage hiccup - just retry next cycle
+      }
+    }
+
+    poll();
+    setInterval(poll, 4000);
+  }
+})();
+</script>
+</body>
+</html>
